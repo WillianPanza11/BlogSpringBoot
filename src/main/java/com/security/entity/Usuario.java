@@ -12,6 +12,7 @@ import java.util.Set;
 
 //clase que accede a la DB
 @Entity
+@Table(name = "USUARIO")
 public class Usuario {
 
     @Id

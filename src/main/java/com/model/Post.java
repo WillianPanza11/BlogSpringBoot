@@ -9,7 +9,7 @@ import javax.validation.constraints.NotEmpty;
 import com.security.entity.Usuario;
 
 @Entity
-@Table
+@Table(name = "POST")
 public class Post {
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

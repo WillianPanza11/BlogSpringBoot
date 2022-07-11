@@ -6,6 +6,7 @@ import javax.validation.constraints.NotNull;
 import com.security.enums.RolNombre;
 
 @Entity
+@Table(name = "ROL")
 public class Rol {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
