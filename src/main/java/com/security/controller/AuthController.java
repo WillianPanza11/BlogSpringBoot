@@ -4,6 +4,8 @@ import com.util.GenericResponse;
 import com.util.ParametersApp;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -25,6 +27,7 @@ import com.security.service.UsuarioService;
 
 import javax.validation.Valid;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 @RestController
@@ -52,23 +55,22 @@ public class AuthController {
         GenericResponse<String> response = new GenericResponse<>();
         if (bindingResult.hasErrors()) {
             response.setMessage(ParametersApp.SUCCESSFUL.getReasonPhrase());
-            response.setObject("CAMPOS MAL FORMADOS!!");
+            response.setObject("CAMPOS MAL FORMADOS!!");//no cambiar este mensaje
             response.setStatus(ParametersApp.SUCCESSFUL.value());
             return response;
         } else if (usuarioService.existsByNombreUsuario(nuevoUsuario.getNombreUsuario())) {
             response.setMessage(ParametersApp.SUCCESSFUL.getReasonPhrase());
-            response.setObject("ESE NOMBRE YA EXISTE!!");
+            response.setObject("ESE NOMBRE YA EXISTE!!");//no cambiar este mensaje
             response.setStatus(ParametersApp.SUCCESSFUL.value());
             return response;
         } else if (usuarioService.existsByEmail(nuevoUsuario.getEmail())) {
             response.setMessage(ParametersApp.SUCCESSFUL.getReasonPhrase());
-            response.setObject("ESE EMAIL YA EXISTE!!");
+            response.setObject("ESE EMAIL YA EXISTE!!");//no cambiar este mensaje
             response.setStatus(ParametersApp.SUCCESSFUL.value());
             return response;
         } else {
             Usuario usuario = new Usuario(nuevoUsuario.getNombre(), nuevoUsuario.getNombreUsuario(),
-                    nuevoUsuario.getEmail(), passwordEncoder.encode(nuevoUsuario.getPassword()), 
-                    nuevoUsuario.getCelular());
+                    nuevoUsuario.getEmail(), passwordEncoder.encode(nuevoUsuario.getPassword()));
             Set<Rol> roles = new HashSet<>();
             roles.add(rolService.getByRolNombre(RolNombre.ROLE_USER).get());
             if (nuevoUsuario.getRoles().contains("admin")) {
@@ -77,55 +79,11 @@ public class AuthController {
             usuario.setRoles(roles);
             usuarioService.save(usuario);
             response.setMessage(ParametersApp.SUCCESSFUL.getReasonPhrase());
-            response.setObject("USUARIO GUARDADO " + usuario.getIdUsuario());
+            response.setObject("USUARIO GUARDADO");//no cambiar este mensaje
             response.setStatus(ParametersApp.SUCCESSFUL.value());
             return response;
         }
     }
-
-    // @PostMapping("/nuevos")
-    // public ResponseEntity<?> nuevos(@Valid @RequestBody NuevoUsuario
-    // nuevoUsuario,
-    // BindingResult bindingResult) {
-    // if (bindingResult.hasErrors())
-    // return new ResponseEntity(new Mensaje("campos mal puestos o email inválido"),
-    // HttpStatus.BAD_REQUEST);
-    // if (usuarioService.existsByNombreUsuario(nuevoUsuario.getNombreUsuario()))
-    // return new ResponseEntity(new Mensaje("ese nombre ya existe"),
-    // HttpStatus.BAD_REQUEST);
-    // if (usuarioService.existsByEmail(nuevoUsuario.getEmail()))
-    // return new ResponseEntity(new Mensaje("ese email ya existe"),
-    // HttpStatus.BAD_REQUEST);
-    // Usuario usuario = new Usuario(nuevoUsuario.getNombre(),
-    // nuevoUsuario.getNombreUsuario(), nuevoUsuario.getEmail(),
-    // passwordEncoder.encode(nuevoUsuario.getPassword()));
-
-    // Set<Rol> roles = new HashSet<>();
-    // roles.add(rolService.getByRolNombre(RolNombre.ROLE_USER).get());
-    // if (nuevoUsuario.getRoles().contains("admin"))
-    // roles.add(rolService.getByRolNombre(RolNombre.ROLE_ADMIN).get());
-    // usuario.setRoles(roles);
-    // usuarioService.save(usuario);
-    // return new ResponseEntity(new Mensaje("usuario guardado"),
-    // HttpStatus.CREATED);
-    // }
-
-    // @PostMapping("/login")
-    // public ResponseEntity<JwtDto> login(@Valid @RequestBody LoginUsuario
-    // loginUsuario, BindingResult bindingResult) {
-    // if (bindingResult.hasErrors())
-    // return new ResponseEntity(new Mensaje("campos mal puestos"),
-    // HttpStatus.BAD_REQUEST);
-    // Authentication authentication = authenticationManager.authenticate(
-    // new UsernamePasswordAuthenticationToken(loginUsuario.getNombreUsuario(),
-    // loginUsuario.getPassword()));
-    // SecurityContextHolder.getContext().setAuthentication(authentication);
-    // String jwt = jwtProvider.generateToken(authentication);
-    // UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-    // JwtDto jwtDto = new JwtDto(jwt, userDetails.getUsername(),
-    // userDetails.getAuthorities());
-    // return new ResponseEntity(jwtDto, HttpStatus.OK);
-    // }
 
     @PostMapping("/login")
     public GenericResponse<JwtDto> login(@Valid @RequestBody LoginUsuario loginUsuario, BindingResult bindingResult) {
@@ -152,6 +110,12 @@ public class AuthController {
             }
             return response;
         }
-
     }
+
+    //BuscarUsuario login
+    @GetMapping(path = "findUser")
+    public ResponseEntity<GenericResponse<Optional<Usuario>>> findNombre(@RequestParam String nombreUsuario){
+        return new ResponseEntity<GenericResponse<Optional<Usuario>>>(usuarioService.getNombreUsuario(nombreUsuario), HttpStatus.OK);
+    }
+
 }

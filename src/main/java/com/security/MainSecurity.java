@@ -65,6 +65,8 @@ public class MainSecurity extends WebSecurityConfigurerAdapter {
                         "/swagger-resources/**",
                         "/configuration/**")
                 .permitAll()
+                .antMatchers("/api/posts/listar-post")
+                .permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .exceptionHandling().authenticationEntryPoint(jwtEntryPoint)

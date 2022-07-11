@@ -2,7 +2,12 @@ package com.security.entity;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.model.Post;
+
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 //clase que accede a la DB
@@ -27,24 +32,34 @@ public class Usuario {
     private String password;
 
     @NotNull
-    private int celular; 
-
-    @NotNull
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "usuario_rol", joinColumns = @JoinColumn(name = "usuario_id"),
     inverseJoinColumns = @JoinColumn(name = "rol_id"))
     private Set<Rol> roles = new HashSet<>();
 
+    @JsonIgnore
+	@OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	private List<Post> post;
+
     public Usuario() {
     }
 
-    public Usuario(@NotNull String nombre, @NotNull String nombreUsuario, @NotNull String email, @NotNull String password
-    ,@NotNull int celular) {
+    public Usuario(@NotNull String nombre, @NotNull String nombreUsuario, @NotNull String email, @NotNull String password) {
         this.nombre = nombre;
         this.nombreUsuario = nombreUsuario;
         this.email = email;
         this.password = password;
-        this.celular = celular;
+    }
+
+    public Usuario(Long idUsuario, @NotNull String nombre, @NotNull String nombreUsuario, @NotNull String email,
+            @NotNull String password, @NotNull Set<Rol> roles, List<Post> post) {
+        this.idUsuario = idUsuario;
+        this.nombre = nombre;
+        this.nombreUsuario = nombreUsuario;
+        this.email = email;
+        this.password = password;
+        this.roles = roles;
+        this.post = post;
     }
 
     public Long getIdUsuario() {
@@ -87,19 +102,19 @@ public class Usuario {
         this.password = password;
     }
 
-    public int getCelular() {
-        return celular;
-    }
-
-    public void setCelular(int celular) {
-        this.celular = celular;
-    }
-
     public Set<Rol> getRoles() {
         return roles;
     }
 
     public void setRoles(Set<Rol> roles) {
         this.roles = roles;
+    }
+
+    public List<Post> getPost() {
+        return post;
+    }
+
+    public void setPost(List<Post> post) {
+        this.post = post;
     }
 }

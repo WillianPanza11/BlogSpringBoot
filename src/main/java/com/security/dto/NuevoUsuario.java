@@ -2,7 +2,6 @@ package com.security.dto;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -20,9 +19,6 @@ public class NuevoUsuario {
 
     @NotBlank
     private String password;
-
-    @NotNull
-    private int celular; 
     
     private Set<String> roles = new HashSet<>();
 
@@ -56,14 +52,6 @@ public class NuevoUsuario {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public int getCelular() {
-        return celular;
-    }
-
-    public void setCelular(int celular) {
-        this.celular = celular;
     }
 
     public Set<String> getRoles() {
