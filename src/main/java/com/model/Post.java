@@ -36,9 +36,32 @@ public class Post {
     @Column(name = "ID_USER", unique = false)
 	private Long idUser;
 
+    @Column(name = "ID_SECCION", unique = false)
+	private Long idSeccion;
+
     @JoinColumn(name = "ID_USER", referencedColumnName = "idUsuario",insertable = false, updatable = false)
 	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	private Usuario usuario;
+
+    @JoinColumn(name = "ID_SECCION", referencedColumnName = "idSecciones",insertable = false, updatable = false)
+	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	private Secciones secc; 
+
+    public Long getIdSeccion() {
+        return idSeccion;
+    }
+
+    public void setIdSeccion(Long idSeccion) {
+        this.idSeccion = idSeccion;
+    }
+
+    public Secciones getSecc() {
+        return secc;
+    }
+
+    public void setSecc(Secciones secc) {
+        this.secc = secc;
+    }
 
     public Long getId() {
         return id;

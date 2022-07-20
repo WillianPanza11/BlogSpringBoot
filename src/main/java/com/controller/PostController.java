@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.dto.PostDto;
+import com.dto.PostDtoOnly;
 import com.service.PostService;
 import com.util.GenericResponse;
 
@@ -21,7 +22,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 
 @RestController
-@RequestMapping("/api/posts/")
+@RequestMapping("api/posts/")
 @Tag(name = "MenuWS", description = "Control y mantenimiento de menus")
 public class PostController {
 	
@@ -46,5 +47,16 @@ public class PostController {
     @PutMapping(path = "updatePost")
 	public ResponseEntity<GenericResponse<String>> updatePost(@RequestBody PostDto postDto){
 		return new ResponseEntity<GenericResponse<String>>(postService.updatePost(postDto), HttpStatus.OK);
+	}
+
+	//findAllBySeccion
+	@GetMapping(path = "findAllBySeccion")
+	public ResponseEntity<GenericResponse<List<PostDto>>> findAllBySeccion(@RequestParam int nombre){
+		return new ResponseEntity<GenericResponse<List<PostDto>>>(postService.findAllBySeccion(nombre), HttpStatus.OK);
+	}
+
+	@GetMapping(path = "findAllBySeccionAdmin")
+	public ResponseEntity<GenericResponse<List<PostDtoOnly>>> findAllBySeccionAdmin(){
+		return new ResponseEntity<GenericResponse<List<PostDtoOnly>>>(postService.findAllBySeccionAdmin(), HttpStatus.OK);
 	}
 }

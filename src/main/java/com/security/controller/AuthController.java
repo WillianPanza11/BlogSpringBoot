@@ -31,7 +31,7 @@ import java.util.Optional;
 import java.util.Set;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("auth")
 @CrossOrigin
 public class AuthController {
 
@@ -50,6 +50,7 @@ public class AuthController {
     @Autowired
     JwtProvider jwtProvider;
 
+    @CrossOrigin 
     @PostMapping("/nuevo")
     public GenericResponse<String> nuevo(@Valid @RequestBody NuevoUsuario nuevoUsuario, BindingResult bindingResult) {
         GenericResponse<String> response = new GenericResponse<>();

@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.dto.PostDto;
+import com.dto.PostDtoOnly;
 import com.model.Post;
 import com.repository.PostRepository;
 import com.util.GenericResponse;
@@ -33,6 +34,7 @@ public class PostService {
             post.setCreatedOn(Instant.now());
             post.setUsername(postDto.getUsername());
             post.setUpdatedOn(Instant.now());
+            post.setIdSeccion(postDto.getIdSecciones());
             postRepository.save(post);
             response.setMessage(ParametersApp.SUCCESSFUL.getReasonPhrase());
             response.setObject("POST " + post.getId() + " guardado correctamente ");
@@ -85,6 +87,7 @@ public class PostService {
                 post.setContent(postDto.getContent());
                 post.setUsername(postDto.getUsername());
                 post.setIdUser(postDto.getIduser());
+                post.setIdSeccion(postDto.getIdSecciones());
                 postRepository.save(post);
                 response.setMessage(ParametersApp.SUCCESSFUL.getReasonPhrase());
                 response.setObject("POST " + post.getId() + " actualizado correctamente");
@@ -125,6 +128,70 @@ public class PostService {
             log.error("ERROR", e);
             response.setMessage(ParametersApp.SERVER_ERROR.getReasonPhrase());
             response.setStatus(ParametersApp.SERVER_ERROR.value());
+        }
+        return response;
+    }
+
+    // findAllBySeccion
+    public GenericResponse<List<PostDto>> findAllBySeccion(int nombre) {
+        GenericResponse<List<PostDto>> response = new GenericResponse<>();
+        try {
+            List<PostDto> postDto = new ArrayList<>();
+            for (Post post : postRepository.findAllBySeccion(nombre)) {
+                if (post != null) {
+                    PostDto dto = new PostDto();
+                    dto.setId(post.getId());
+                    dto.setIdSecciones(post.getIdSeccion());
+                    dto.setIduser(post.getIdUser());
+                    dto.setTitle(post.getTitle());
+                    dto.setContent(post.getContent());
+                    dto.setUsername(post.getUsername());
+                    dto.setCreatedOn(post.getCreatedOn());
+                    dto.setUpdatedOn(post.getUpdatedOn());
+                    dto.setUser(post.getUsuario());
+                    postDto.add(dto);
+                } else {
+                    response.setStatus(ParametersApp.SERVER_ERROR.value());
+                }
+            }
+            response.setMessage(ParametersApp.SUCCESSFUL.getReasonPhrase());
+            response.setObject(postDto);
+            response.setStatus(ParametersApp.SUCCESSFUL.value());
+
+        } catch (Exception e) {
+            response.setStatus(ParametersApp.SERVER_ERROR.value());
+            log.error("ERROR", e);
+        }
+        return response;
+    }
+
+    public GenericResponse<List<PostDtoOnly>> findAllBySeccionAdmin() {
+        GenericResponse<List<PostDtoOnly>> response = new GenericResponse<>();
+        try {
+            List<PostDtoOnly> postDto = new ArrayList<>();
+            for (Post post : postRepository.findAllBySeccionAdmin()) {
+                if (post != null) {
+                    PostDtoOnly dto = new PostDtoOnly();
+                    dto.setId(post.getId());
+                    dto.setIdSecciones(post.getIdSeccion());
+                    dto.setIduser(post.getIdUser());
+                    dto.setTitle(post.getTitle());
+                    dto.setContent(post.getContent());
+                    dto.setUsername(post.getUsername());
+                    dto.setCreatedOn(post.getCreatedOn());
+                    dto.setUpdatedOn(post.getUpdatedOn());
+                    postDto.add(dto);
+                } else {
+                    response.setStatus(ParametersApp.SERVER_ERROR.value());
+                }
+            }
+            response.setMessage(ParametersApp.SUCCESSFUL.getReasonPhrase());
+            response.setObject(postDto);
+            response.setStatus(ParametersApp.SUCCESSFUL.value());
+
+        } catch (Exception e) {
+            response.setStatus(ParametersApp.SERVER_ERROR.value());
+            log.error("ERROR", e);
         }
         return response;
     }
